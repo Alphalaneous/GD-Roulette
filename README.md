@@ -39,7 +39,7 @@ Then open the generated solution in Visual Studio.
 
 ## Contact
 
-You can contact me through my personal [Discord server](https://discord.gg/WPcqK3Yt) to get instant™️ support and other stuff ig.
+You can contact me through my personal [Discord server](https://discord.gg/3bShQb6Jz3) to get instant™️ support and other stuff ig.
 
 ## Credits
 
@@ -47,5 +47,5 @@ You can contact me through my personal [Discord server](https://discord.gg/WPcqK
 - qwix ([@qwix456](https://github.com/qwix456)): Added the featured/epic glow, and other stuff.
 - iAndyHD3 ([@iAndyHD3](https://github.com/iAndyHD3)): Helped with issues.
 - Cvolton ([@Cvolton](https://github.com/Cvolton)): Helped with issues.
-- Alphalaneous ([@Alphatism](https://github.com/Alphatism)): Helped with issues.
+- Alphalaneous ([@Alphalaneous](https://github.com/Alphalaneous)): Helped with issues.
 - mat ([@matcool](https://github.com/matcool)): Helped with Geode issues.

@@ -595,10 +595,10 @@ void RLRouletteLayer::onSkipButton(CCObject*)
 
 void RLRouletteLayer::finishLevelRoulette()
 {
-	onNextLevel(false, false, 40.f);
-
 	if (!m_list_fetcher_error.empty())
 	{
+		onNextLevel();
+
 		static_cast<TextArea*>(error_menu->getChildByID("reason-label"))->setString(m_list_fetcher_error);
 
 		playing_menu->setVisible(false);
