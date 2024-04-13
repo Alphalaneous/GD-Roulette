@@ -53,7 +53,6 @@ public:
 	void registerWithTouchDispatcher() override;
 
 	CCMenuItemSpriteExtra* getDifficultyButton(GJDifficulty);
-	void setDifficultyButtonColor(GJDifficulty, const ccColor3B&);
 
 private:
 	void getRandomListLevel(GJDifficulty, ListFetcher::level_pair_t&, std::string&);

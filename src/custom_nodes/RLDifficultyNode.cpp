@@ -34,11 +34,14 @@ RLDifficultyNode* RLDifficultyNode::create(GJDifficulty difficulty)
 bool RLDifficultyNode::init(const DifficultyInfo& di)
 {
 	if (!CCNodeRGBA::init()) return false;
-	
+
 	m_difficulty_info = di;
 
 	this->setCascadeColorEnabled(true);
 	this->setCascadeOpacityEnabled(true);
+	m_will_set_anchor = true;
+	this->setAnchorPoint({ .0f, .0f });
+	m_will_set_anchor = false;
 
 
 	m_difficulty_sprite = CCSprite::createWithSpriteFrameName(
@@ -47,10 +50,7 @@ bool RLDifficultyNode::init(const DifficultyInfo& di)
 	m_difficulty_sprite->setID("difficulty-sprite");
 	this->addChild(m_difficulty_sprite);
 
-	// TODO: fix this setting the position relative to the bottom left when not in a CCMenuItemSpriteExtra
-	const CCPoint& targetContentSize = m_difficulty_sprite->getContentSize();
-	this->setContentSize(targetContentSize);
-	m_difficulty_sprite->setPosition(targetContentSize / 2);
+	this->setContentSize(m_difficulty_sprite->getContentSize());
 
 	switch (m_difficulty_info.feature_state)
 	{
@@ -94,11 +94,6 @@ void RLDifficultyNode::setDifficulty(const DifficultyInfo& di)
 		this->addChild(m_difficulty_sprite);
 	}
 
-	// man this codebase is getting worse by the minute
-	// TODO: find a better way :despair:
-	if (this->getParent() && typeinfo_cast<CCMenuItemSpriteExtra*>(this->getParent()))
-		m_difficulty_sprite->setPosition(this->getContentSize() / 2);
-
 	if (m_difficulty_info.feature_state != di.feature_state)
 	{
 		if (m_feature_sprite)
@@ -133,4 +128,11 @@ void RLDifficultyNode::setDifficulty(const DifficultyInfo& di)
 void RLDifficultyNode::setDifficulty(GJDifficulty difficulty)
 {
 	setDifficulty({ difficulty, RL_FEATURE_STATE::NONE });
+}
+
+// replacing bad code with even more bad code :D
+void RLDifficultyNode::setAnchorPoint(const CCPoint& anchorPoint)
+{
+	if (m_will_set_anchor)
+		CCNodeRGBA::setAnchorPoint(anchorPoint);
 }

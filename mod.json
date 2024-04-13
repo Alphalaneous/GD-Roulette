@@ -1,11 +1,11 @@
 {
-	"geode": "2.0.0-beta.22",
+	"geode": "2.0.0-beta.23",
 	"gd": {
 		"win": "2.204",
 		"android": "2.205",
 		"mac": "2.200"
 	},
-	"version": "v2.0.4",
+	"version": "v2.0.5",
 	"id": "spaghettdev.gd-roulette",
 	"name": "GD-Roulette",
 	"developer": "SpaghettDev",
@@ -27,7 +27,7 @@
 	"dependencies": [
 		{
 			"id": "geode.node-ids",
-			"version": "v1.3.0",
+			"version": ">=v1.3.0",
 			"importance": "required"
 		}
 	],

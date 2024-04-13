@@ -413,8 +413,8 @@ void RLRouletteLayer::onDifficultyButton(CCObject* sender)
 			? g_rouletteManager.previousDemonDifficulty
 			: static_cast<GJDifficulty>(-2)
 	);
-	setDifficultyButtonColor(rl::constants::idx_to_diff.at(prevIdx), { 125, 125, 125 });
-	setDifficultyButtonColor(difficulty, { 255, 255, 255 });
+	getDifficultyButton(rl::constants::idx_to_diff.at(prevIdx))->setColor({ 125, 125, 125 });
+	getDifficultyButton(difficulty)->setColor({ 255, 255, 255 });
 
 	main_menu->getChildByID("demon-plus-button")->setVisible(m_selected_difficulty >= GJDifficulty::Demon);
 }
@@ -677,11 +677,6 @@ void RLRouletteLayer::registerWithTouchDispatcher()
 CCMenuItemSpriteExtra* RLRouletteLayer::getDifficultyButton(GJDifficulty difficulty)
 {
 	return static_cast<CCMenuItemSpriteExtra*>(main_menu->getChildByTag(static_cast<int>(difficulty)));
-}
-
-void RLRouletteLayer::setDifficultyButtonColor(GJDifficulty difficulty, const ccColor3B& color)
-{
-	getDifficultyButton(difficulty)->setColor(color);
 }
 
 

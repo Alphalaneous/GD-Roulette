@@ -8,6 +8,7 @@ project(GD-Roulette LANGUAGES CXX VERSION 1.0.0)
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING "" FORCE)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 file(GLOB_RECURSE SRC_MAIN
     "${SRC_DIR}/**.hpp"
@@ -28,7 +29,7 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
-setup_geode_mod(${PROJECT_NAME} EXTERNALS geode.node-ids:1.3.0)
+setup_geode_mod(${PROJECT_NAME})
 
 # Get needed modules
 include(cmake/git.cmake)
