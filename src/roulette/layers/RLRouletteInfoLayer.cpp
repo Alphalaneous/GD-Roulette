@@ -4,6 +4,7 @@
 #include "../../custom_nodes/RLDifficultyNode.hpp"
 #include "../../utils.hpp"
 
+#include <functional>
 #include <matjson/stl_serialize.hpp>
 #include <Geode/Bindings.hpp>
 #include <Geode/Geode.hpp>
@@ -128,13 +129,11 @@ void RLRouletteInfoLayer::onToggleButton(CCObject* sender)
 	// yeah...
 	auto changeListWrapper = [&](const std::function<void()>& f) {
 		g_rouletteManager.getFromSaveContainer("selected-list-array").as_array().at(button->getTag()) = false;
-		g_rouletteManager.getFromSaveContainer("selected-list-array").as_array().at(prevIdx) = false;
 		g_rouletteManager.getFromSaveContainer("selected-list-array").as_array().at(0) = true;
 
 		f();
 
 		g_rouletteManager.getFromSaveContainer("selected-list-array").as_array().at(0) = false;
-		g_rouletteManager.getFromSaveContainer("selected-list-array").as_array().at(prevIdx) = false;
 		g_rouletteManager.getFromSaveContainer("selected-list-array").as_array().at(button->getTag()) = true;
 	};
 

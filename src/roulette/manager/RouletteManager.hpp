@@ -1,6 +1,5 @@
 #pragma once
 #include <atomic>
-#include <array>
 #include <matjson/stl_serialize.hpp>
 
 #include <Geode/loader/Mod.hpp>

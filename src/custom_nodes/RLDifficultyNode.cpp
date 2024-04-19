@@ -108,17 +108,13 @@ void RLDifficultyNode::setDifficulty(const DifficultyInfo& di)
 				m_feature_sprite = CCSprite::createWithSpriteFrameName(
 					rl::constants::feature_state_to_sprite.at(di.feature_state).data()
 				);
+				m_feature_sprite->setID("feature-sprite");
+				this->addChild(m_feature_sprite, -1);
 			break;
 
 			default:
 				m_feature_sprite = nullptr;
 			break;
-		}
-
-		if (m_feature_sprite)
-		{
-			m_feature_sprite->setID("feature-sprite");
-			this->addChild(m_feature_sprite, -1);
 		}
 	}
 

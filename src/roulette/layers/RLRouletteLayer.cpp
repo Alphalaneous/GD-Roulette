@@ -128,7 +128,10 @@ bool RLRouletteLayer::init()
 	plusButton->setPosition({ 135.f, -20.f });
 	plusButton->setSizeMult(1.2f);
 	plusButton->setID("demon-plus-button");
-	plusButton->setVisible(m_selected_difficulty >= GJDifficulty::Demon);
+	plusButton->setVisible(
+		rl::utils::getIndexOf(g_rouletteManager.getFromSaveContainer("selected-list-array").as_array(), true) != 0 ||
+		m_selected_difficulty >= GJDifficulty::Demon
+	);
 	main_menu->addChild(plusButton);
 
 	auto startButtonText = CCLabelBMFont::create("Start", "bigFont.fnt");
@@ -733,7 +736,12 @@ CCMenuItemSpriteExtra* RLRouletteLayer::createDifficultyButton(
 		this,
 		menu_selector(RLRouletteLayer::onDifficultyButton)
 	);
-	if (m_selected_difficulty != difficulty)
+	if (
+		(
+			rl::utils::getIndexOf(g_rouletteManager.getFromSaveContainer("selected-list-array").as_array(), true) != 0 &&
+			m_selected_difficulty != difficulty
+		) || m_selected_difficulty != difficulty
+		)
 		button->setColor({ 125, 125, 125 });
 	button->setPosition(point);
 	button->setTag(static_cast<int>(difficulty));

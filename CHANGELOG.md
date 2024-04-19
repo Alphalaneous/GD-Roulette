@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - `RLDifficultyNode` wrong position when playing roulette
 - `RLLoadingCircle` wrong position for a split second when offline
+- Some miscellaneous bugs
 
 ## [2.0.4] - 2024-03-13
 

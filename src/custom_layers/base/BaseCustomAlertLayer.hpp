@@ -4,6 +4,7 @@
 
 #include <Geode/cocos/include/ccTypes.h>
 #include <Geode/cocos/cocoa/CCObject.h>
+#include <Geode/binding/FLAlertLayer.hpp>
 #include <Geode/binding/CCMenuItemSpriteExtra.hpp>
 
 using namespace geode::prelude;
