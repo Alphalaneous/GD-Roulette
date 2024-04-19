@@ -2,7 +2,7 @@ name: Bug Report
 description: File a bug report
 title: "[Bug]: "
 labels: ["bug"]
-projects: "SpaghettDev/4"
+projects: ["SpaghettDev/4"]
 assignees:
   - SpaghettDev
 body:
@@ -53,5 +53,5 @@ body:
     id: logs
     attributes:
       label: Relevant log output
-      description: Please copy and paste the log output that can be found in `Geometry Dash/geode/logs` on Windows and somehwere else in Android (lol). This will be automatically formatted into code, so no need for backticks.
+      description: Please copy and paste the log output that can be found in `Geometry Dash/geode/logs` on Windows and `/storage/emulated/0/Android/media/com.geode.launcher/game/geode/crashlogs` in Android.
       render: shell

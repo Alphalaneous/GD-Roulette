@@ -2,7 +2,7 @@ name: Feature Suggestion
 description: Suggest a feature
 title: "[Feature]: "
 labels: ["enhancement"]
-projects: "SpaghettDev/4"
+projects: ["SpaghettDev/4"]
 assignees:
   - SpaghettDev
 body:
