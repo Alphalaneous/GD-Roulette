@@ -737,10 +737,8 @@ CCMenuItemSpriteExtra* RLRouletteLayer::createDifficultyButton(
 		menu_selector(RLRouletteLayer::onDifficultyButton)
 	);
 	if (
-		(
-			rl::utils::getIndexOf(g_rouletteManager.getFromSaveContainer("selected-list-array").as_array(), true) != 0 &&
-			m_selected_difficulty != difficulty
-		) || m_selected_difficulty != difficulty
+		rl::utils::getIndexOf(g_rouletteManager.getFromSaveContainer("selected-list-array").as_array(), true) != 0 ||
+		m_selected_difficulty != difficulty
 		)
 		button->setColor({ 125, 125, 125 });
 	button->setPosition(point);
