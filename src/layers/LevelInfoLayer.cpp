@@ -2,8 +2,6 @@
 #include "../roulette/layers/RLRouletteLayer.hpp"
 
 #include <Geode/modify/LevelInfoLayer.hpp>
-#include <tulip/TulipHook.hpp>
-#include <tulip/platform/WindowsConvention.hpp>
 
 using namespace geode::prelude;
 
