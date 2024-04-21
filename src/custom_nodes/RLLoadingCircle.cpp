@@ -1,4 +1,4 @@
-// not taken from https://github.com/acaruso-xx/slope-geode/blob/main/src/plate/LoadingCircle.cpp
+// not taken from https://github.com/acaruso-xx/slope-geode/blob/main/src/plate/LoadingCircle.cpp :D
 #include "RLLoadingCircle.hpp"
 
 RLLoadingCircle* RLLoadingCircle::create()

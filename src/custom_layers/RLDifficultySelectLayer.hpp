@@ -3,6 +3,8 @@
 #include <array>
 #include <functional>
 
+#include <Geode/Enums.hpp>
+
 #include "base/BaseCustomAlertLayer.hpp"
 
 class RLDifficultySelectLayer;

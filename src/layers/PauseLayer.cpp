@@ -1,5 +1,4 @@
 #include "../roulette/manager/RouletteManager.hpp"
-#include "../roulette/layers/RLRouletteLayer.hpp"
 
 #include <Geode/modify/PauseLayer.hpp>
 

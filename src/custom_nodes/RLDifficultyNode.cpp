@@ -18,17 +18,7 @@ RLDifficultyNode* RLDifficultyNode::create(const DifficultyInfo& di)
 
 RLDifficultyNode* RLDifficultyNode::create(GJDifficulty difficulty)
 {
-	auto* ret = new RLDifficultyNode();
-
-	if (ret && ret->init({ difficulty, RL_FEATURE_STATE::NONE }))
-		ret->autorelease();
-	else
-	{
-		delete ret;
-		ret = nullptr;
-	}
-
-	return ret;
+	return create({ difficulty, RL_FEATURE_STATE::NONE });
 }
 
 bool RLDifficultyNode::init(const DifficultyInfo& di)

@@ -7,6 +7,7 @@
 
 using namespace geode::prelude;
 
+// TODO: remove once GJFeatureState is merged into geode-sdk/geode (#706)
 enum class RL_FEATURE_STATE
 {
 	NONE = -1,
