@@ -50,11 +50,14 @@ class $modify(PlayLayerPause, PlayLayer)
 	void destroyPlayer(PlayerObject* player, GameObject* obj)
 	{
 #ifdef GEODE_IS_MACOS
+		const float currentDelta = delta;
+
 		PlayLayer::destroyPlayer(player, obj);
 
 		const int percentage = m_level->m_normalPercent;
 #else
 		const int percentage = this->getCurrentPercentInt();
+		const float currentDelta = delta;
 #endif // GEODE_IS_MACOS
 		if (
 			g_rouletteManager.isPlaying &&
@@ -62,7 +65,7 @@ class $modify(PlayLayerPause, PlayLayer)
 			!this->m_isPracticeMode &&
 			percentage >= g_rouletteManager.levelPercentageGoal
 			) {
-			if (delta > .2f/* && !this->m_player1->m_isDead*/)
+			if (currentDelta > .2f/* && !this->m_player1->m_isDead*/)
 			{
 				g_rouletteManager.hasFinishedPreviousLevel = true;
 				g_rouletteManager.currentLevelPercentage = percentage;
@@ -75,7 +78,9 @@ class $modify(PlayLayerPause, PlayLayer)
 
 					m_fields->pauseGameAction = runningScene->runAction(
 						CCSequence::create(
-							CCDelayTime::create(1.f), CCCallFunc::create(runningScene, callfunc_selector(PlayLayerPause::pause)), nullptr
+							CCDelayTime::create(1.f),
+							CCCallFunc::create(runningScene, callfunc_selector(PlayLayerPause::pause)),
+							nullptr
 						)
 					);
 				}
