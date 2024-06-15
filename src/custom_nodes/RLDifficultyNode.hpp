@@ -7,23 +7,13 @@
 
 using namespace geode::prelude;
 
-// TODO: remove once GJFeatureState is merged into geode-sdk/geode (#706)
-enum class RL_FEATURE_STATE
-{
-	NONE = -1,
-	FEATURED,
-	EPIC,
-	LEGENDARY,
-	MYTHIC
-};
-
 class RLDifficultyNode : public CCNodeRGBA
 {
 private:
 	struct DifficultyInfo
 	{
 		GJDifficulty difficulty;
-		RL_FEATURE_STATE feature_state = RL_FEATURE_STATE::NONE;
+		GJFeatureState feature_state = GJFeatureState::None;
 
 		bool operator==(const DifficultyInfo&) const = default;
 	} m_difficulty_info;

@@ -1,10 +1,14 @@
 #pragma once
+
 #include <matjson.hpp>
 #include <array>
 #include <atomic>
 #include <string>
 
 #include <Geode/Enums.hpp>
+
+#include <Geode/utils/web.hpp>
+#include <Geode/loader/Event.hpp>
 
 #include <rtrp/responses/ListResponse.hpp>
 #include <rtrp/objects/LevelObject.hpp>
@@ -56,6 +60,10 @@ private:
 		else
 			return fmt::format("&diff={}&demonFilter={}", -2, m_cDemonDiffToFilter.at(difficulty));
 	}
+
+	geode::EventListener<geode::utils::web::WebTask> m_listener;
+	// used when fetching demonlist/challengelist/gdlist
+	geode::EventListener<geode::utils::web::WebTask> m_listener2;
 
 public:
 	using level_pair_t = std::pair<rtrp::objects::LevelObject, rtrp::objects::CreatorObject>;

@@ -18,7 +18,7 @@ RLDifficultyNode* RLDifficultyNode::create(const DifficultyInfo& di)
 
 RLDifficultyNode* RLDifficultyNode::create(GJDifficulty difficulty)
 {
-	return create({ difficulty, RL_FEATURE_STATE::NONE });
+	return create({ difficulty, GJFeatureState::None });
 }
 
 bool RLDifficultyNode::init(const DifficultyInfo& di)
@@ -44,10 +44,10 @@ bool RLDifficultyNode::init(const DifficultyInfo& di)
 
 	switch (m_difficulty_info.feature_state)
 	{
-		case RL_FEATURE_STATE::FEATURED:
-		case RL_FEATURE_STATE::EPIC:
-		case RL_FEATURE_STATE::LEGENDARY:
-		case RL_FEATURE_STATE::MYTHIC:
+		case GJFeatureState::Featured:
+		case GJFeatureState::Epic:
+		case GJFeatureState::Legendary:
+		case GJFeatureState::Mythic:
 			m_feature_sprite = CCSprite::createWithSpriteFrameName(
 				rl::constants::feature_state_to_sprite.at(m_difficulty_info.feature_state).data()
 			);
@@ -91,10 +91,10 @@ void RLDifficultyNode::setDifficulty(const DifficultyInfo& di)
 
 		switch (di.feature_state)
 		{
-			case RL_FEATURE_STATE::FEATURED:
-			case RL_FEATURE_STATE::EPIC:
-			case RL_FEATURE_STATE::LEGENDARY:
-			case RL_FEATURE_STATE::MYTHIC:
+			case GJFeatureState::Featured:
+			case GJFeatureState::Epic:
+			case GJFeatureState::Legendary:
+			case GJFeatureState::Mythic:
 				m_feature_sprite = CCSprite::createWithSpriteFrameName(
 					rl::constants::feature_state_to_sprite.at(di.feature_state).data()
 				);
@@ -113,7 +113,7 @@ void RLDifficultyNode::setDifficulty(const DifficultyInfo& di)
 
 void RLDifficultyNode::setDifficulty(GJDifficulty difficulty)
 {
-	setDifficulty({ difficulty, RL_FEATURE_STATE::NONE });
+	setDifficulty({ difficulty, GJFeatureState::None });
 }
 
 // replacing bad code with even more bad code :D

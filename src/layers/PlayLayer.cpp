@@ -22,13 +22,16 @@ class $modify(GJBaseGameLayer)
 
 class $modify(PlayLayerPause, PlayLayer)
 {
-	CCAction* pauseGameAction = nullptr;
+	struct Fields
+	{
+		CCAction* pause_game_action = nullptr;
+	};
 
 	void pause()
 	{
 		GameManager::sharedState()->getPlayLayer()->pauseGame(false);
 
-		CCDirector::sharedDirector()->getRunningScene()->stopAction(m_fields->pauseGameAction);
+		CCDirector::sharedDirector()->getRunningScene()->stopAction(m_fields->pause_game_action);
 	}
 
 	bool init(GJGameLevel* level, bool p1, bool p2)
@@ -76,7 +79,7 @@ class $modify(PlayLayerPause, PlayLayer)
 				{
 					const auto runningScene = CCDirector::sharedDirector()->getRunningScene();
 
-					m_fields->pauseGameAction = runningScene->runAction(
+					m_fields->pause_game_action = runningScene->runAction(
 						CCSequence::create(
 							CCDelayTime::create(1.f),
 							CCCallFunc::create(runningScene, callfunc_selector(PlayLayerPause::pause)),

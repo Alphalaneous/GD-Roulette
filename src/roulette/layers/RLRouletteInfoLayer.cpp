@@ -96,11 +96,11 @@ bool RLRouletteInfoLayer::init()
 
 	auto versionText = CCLabelBMFont::create(
 #if defined(RWDI_MODE) && defined(GEODE_PLATFORM_SHORT_IDENTIFIER)
-		fmt::format("Version: {} ({} dev)", Mod::get()->getVersion().toString(true), GEODE_PLATFORM_SHORT_IDENTIFIER).c_str(),
+		fmt::format("Version: {} ({} dev)", Mod::get()->getVersion().toVString(true), GEODE_PLATFORM_SHORT_IDENTIFIER).c_str(),
 #elif defined(GEODE_PLATFORM_SHORT_IDENTIFIER)
-		fmt::format("Version: {} ({})", Mod::get()->getVersion().toString(true), GEODE_PLATFORM_SHORT_IDENTIFIER).c_str(),
+		fmt::format("Version: {} ({})", Mod::get()->getVersion().toVString(true), GEODE_PLATFORM_SHORT_IDENTIFIER).c_str(),
 #else
-		fmt::format("Version: {} (how)", Mod::get()->getVersion().toString(true)).c_str(),
+		fmt::format("Version: {} (how)", Mod::get()->getVersion().toVString(true)).c_str(),
 #endif
 		"bigFont.fnt"
 	);

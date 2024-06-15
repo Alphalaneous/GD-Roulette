@@ -25,8 +25,6 @@ class $modify(RouletteButton, CreatorLayer)
 		menu->setID("center-left-menu"_spr);
 		this->addChild(menu);
 
-		// Loader::get()->isModLoaded("absolllute.megahack")
-
 		// this still sucks :(
 		auto rouletteButton = CCMenuItemSpriteExtra::create(
 			CCSprite::create("RL_blankBtn_001.png"_spr),

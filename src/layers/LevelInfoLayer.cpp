@@ -14,17 +14,10 @@ class $modify(LevelInfoLayer)
 		if (g_rouletteManager.isPlaying && level->m_levelID.value() == g_rouletteManager.currentLevelID)
 		{
 			CCLabelBMFont* normalPercentageLabel = static_cast<CCLabelBMFont*>(this->getChildByID("normal-mode-percentage"));
-			float goalOffset = .0f;
 
 			if (!normalPercentageLabel) return true;
 
-			// wtf v2
-			if (this->m_level->m_normalPercent < 10)
-				goalOffset = 24.f;
-			else if (this->m_level->m_normalPercent < 100)
-				goalOffset = 31.f;
-			else
-				goalOffset = 39.f;
+			float goalOffset = normalPercentageLabel->getContentWidth() / 2;
 
 			auto goalPercentage = CCLabelBMFont::create(
 				fmt::format("({}%)", g_rouletteManager.levelPercentageGoal).c_str(),

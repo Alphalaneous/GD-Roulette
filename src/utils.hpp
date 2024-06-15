@@ -10,7 +10,6 @@
 #include <Geode/binding/GJGameLevel.hpp>
 
 #include "custom_layers/base/BaseCustomAlertLayer.hpp"
-#include "custom_nodes/RLDifficultyNode.hpp"
 #include "listfetcher/ListFetcher.hpp"
 
 namespace rl
@@ -135,11 +134,11 @@ namespace rl
 			return static_cast<GJDifficulty>(level.difficultyNumerator / level.difficultyDenominator);
 		}
 
-		inline RL_FEATURE_STATE getFeatureStateFromResponse(const rtrp::objects::LevelObject& level)
+		inline GJFeatureState getFeatureStateFromResponse(const rtrp::objects::LevelObject& level)
 		{
 			return level.featureIdx == 0
-				? RL_FEATURE_STATE::NONE
-				: static_cast<RL_FEATURE_STATE>(level.epic);
+				? GJFeatureState::None
+				: static_cast<GJFeatureState>(level.epic);
 		}
 
 		inline CCLabelBMFont* createTextLabel(
@@ -187,7 +186,7 @@ namespace rl
 			auto tap = TextAlertPopup::create(str, time, .6f, 0x96, "bigFont.fnt");
 			tap->setPositionY(yPosition);
 
-			layer->addChild(tap);
+			layer->addChild(tap, 420);
 		}
 
 		template<auto V>
@@ -224,11 +223,11 @@ namespace rl
 		};
 
 
-		inline const std::map<RL_FEATURE_STATE, std::string_view> feature_state_to_sprite{
-			{ RL_FEATURE_STATE::FEATURED, "GJ_featuredCoin_001.png" },
-			{ RL_FEATURE_STATE::EPIC, "GJ_epicCoin_001.png" },
-			{ RL_FEATURE_STATE::LEGENDARY, "GJ_epicCoin2_001.png" },
-			{ RL_FEATURE_STATE::MYTHIC, "GJ_epicCoin3_001.png" },
+		inline const std::map<GJFeatureState, std::string_view> feature_state_to_sprite{
+			{ GJFeatureState::Featured, "GJ_featuredCoin_001.png" },
+			{ GJFeatureState::Epic, "GJ_epicCoin_001.png" },
+			{ GJFeatureState::Legendary, "GJ_epicCoin2_001.png" },
+			{ GJFeatureState::Mythic, "GJ_epicCoin3_001.png" },
 		};
 
 

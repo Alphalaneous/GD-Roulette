@@ -1,4 +1,3 @@
-#include <thread>
 #include <matjson.hpp>
 #include <matjson/stl_serialize.hpp>
 #include <rtrp/objects/LevelObject.hpp>
@@ -206,7 +205,7 @@ bool RLRouletteLayer::init()
 	levelPlayButtonItem->setTag(4);
 	playing_menu->addChild(levelPlayButtonItem);
 
-	auto difficultyNode = RLDifficultyNode::create({ GJDifficulty::Normal, RL_FEATURE_STATE::MYTHIC });
+	auto difficultyNode = RLDifficultyNode::create({ GJDifficulty::Normal, GJFeatureState::Mythic });
 	difficultyNode->setPosition({ -110.f, 40.f });
 	difficultyNode->setScale(1.5f);
 	difficultyNode->setID("difficulty-node");
@@ -309,7 +308,7 @@ bool RLRouletteLayer::init()
 		"chatFont.fnt",
 		.85f, 290.f, { .5f, .5f }, 20.f, false
 	);
-	errorReasonText->setPosition({ .0f, -20.f });
+	errorReasonText->setPosition({ 15.f, -20.f });
 	errorReasonText->setID("reason-label");
 	error_menu->addChild(errorReasonText);
 
@@ -686,39 +685,27 @@ CCMenuItemSpriteExtra* RLRouletteLayer::getDifficultyButton(GJDifficulty difficu
 void RLRouletteLayer::getRandomListLevel(GJDifficulty difficulty, ListFetcher::level_pair_t& level, std::string& error)
 {
 	int listType = rl::utils::getIndexOf(g_rouletteManager.getFromSaveContainer("selected-list-array").as_array(), true);
-	std::thread getListThread;
 
 	switch (listType)
 	{
 	case 0:
-		getListThread = std::thread([&](GJDifficulty difficulty, ListFetcher::level_pair_t& level, std::string& error) {
-			m_list_fetcher.getRandomNormalListLevel(difficulty, std::ref(level), std::ref(error));
-		}, difficulty, std::ref(level), std::ref(error));
+		m_list_fetcher.getRandomNormalListLevel(difficulty, level, error);
 		break;
 	case 1:
-		getListThread = std::thread([&](ListFetcher::level_pair_t& level, std::string& error) {
-			m_list_fetcher.getRandomDemonListLevel(std::ref(level), std::ref(error));
-		}, std::ref(level), std::ref(error));
+		m_list_fetcher.getRandomDemonListLevel(level, error);
 		break;
 	case 2:
-		getListThread = std::thread([&](ListFetcher::level_pair_t& level, std::string& error) {
-			m_list_fetcher.getRandomChallengeListLevel(std::ref(level), std::ref(error));
-		}, std::ref(level), std::ref(error));
+		m_list_fetcher.getRandomChallengeListLevel(level, error);
 		break;
 	case 3:
-		getListThread = std::thread([&](ListFetcher::level_pair_t& level, std::string& error) {
-			m_list_fetcher.getRandomGDListLevel(g_rouletteManager.gdListID, std::ref(level), std::ref(error));
-		}, std::ref(level), std::ref(error));
+		m_list_fetcher.getRandomGDListLevel(g_rouletteManager.gdListID, level, error);
 		break;
 	default:
 		m_level = {};
 		return;
 	}
 
-	// manually set to true because sometimes the thread detaches too late
-	m_list_fetcher.is_fetching = true;
 	this->scheduleUpdate();
-	getListThread.detach();
 }
 
 CCMenuItemSpriteExtra* RLRouletteLayer::createDifficultyButton(

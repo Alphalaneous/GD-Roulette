@@ -15,14 +15,11 @@ class $modify(PauseLayer)
 		if (g_rouletteManager.isPlaying && playLayer->m_level->m_levelID.value() == g_rouletteManager.currentLevelID)
 		{
 			CCLabelBMFont* normalPercentageLabel = static_cast<CCLabelBMFont*>(this->getChildByID("normal-progress-label"));
-			float goalOffset = 24.f;
 
 			if (!normalPercentageLabel) return;
 
-			if (playLayer->m_level->m_normalPercent < 10)
-				goalOffset = 28.f;
-			else if (playLayer->m_level->m_normalPercent <= 100)
-				goalOffset = 40.f;
+			float goalOffset = normalPercentageLabel->getContentWidth() / 2 + 7.f;
+
 			auto goalPercentage = CCLabelBMFont::create(
 				fmt::format("({}%)", g_rouletteManager.levelPercentageGoal).c_str(),
 				"bigFont.fnt"

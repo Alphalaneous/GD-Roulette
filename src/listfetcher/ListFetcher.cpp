@@ -17,35 +17,32 @@ void ListFetcher::getRandomNormalListLevel(GJDifficulty difficulty, level_pair_t
 	is_fetching = true;
 	error = "";
 
-	web::AsyncWebRequest()
-		.userAgent("")
-		.bodyRaw(
-			fmt::format("secret={}&type={}&star={}&page={}&len={}{}",
-				GJ_SECRET, 0, 1,
-				rl::utils::randomInt(1, m_cNormalListMaxPage[static_cast<int>(difficulty) - 1]),
-				GJ_LEN_QUERY, getDifficultyQuery(difficulty)
-			)
-		)
-		.post(GJ_LEVELS_URL)
-		.text()
-		.then([&, difficulty](const auto& resp) {
-			if (resp == "-1")
+	m_listener.bind([&](web::WebTask::Event* e) {
+		if (web::WebResponse* res = e->getValue())
+		{
+			const auto& resp = res->string();
+
+			if (resp.isErr())
 			{
-				error = "Servers returned -1. Try again later. (getGJLevels21.php, 2)";
+				error = fmt::format("Servers returned an invalid response ({}). Try again later. (getGJLevels21.php, 2)", resp.unwrapErr());
 				is_fetching = false;
 				return;
 			}
 
-			const auto result = rtrp::RtResponseParser::parseLevelResponse(resp);
+			const auto& unwrappedResp = resp.unwrap();
+			const auto parsedResponse = rtrp::RtResponseParser::parseLevelResponse(unwrappedResp);
 
-			if (result.isError())
+			if (parsedResponse.isError())
 			{
-				error = "Error parsing response from servers. Try again later. (getGJLevels21.php, 2)";
+				if (unwrappedResp.starts_with("error code"))
+					error = fmt::format("Server returned error code {}. Try again later. (getGJLevels21.php, 2)", unwrappedResp.substr(12));
+				else
+					error = "Error parsing response from servers. Try again later. (getGJLevels21.php, 2)";
 				is_fetching = false;
 				return;
 			}
 
-			auto response = result.unwrap();
+			auto response = parsedResponse.unwrap();
 
 			if (difficulty == GJDifficulty::Easy)
 			{
@@ -64,12 +61,26 @@ void ListFetcher::getRandomNormalListLevel(GJDifficulty difficulty, level_pair_t
 				rl::utils::getCreatorFromLevelResponse(response.creators, response.levels[randomIdx])
 			};
 			is_fetching = false;
-		})
-		.expect([&](const auto& err) {
-			error = err;
-
+		}
+		else if (e->isCancelled())
+		{
+			error = "Request was cancelled. (getGJLevels21.php, 2)";
 			is_fetching = false;
-		});
+		}
+	});
+
+	auto req = web::WebRequest()
+		.userAgent("")
+		.bodyString(
+			fmt::format("secret={}&type={}&star={}&page={}&len={}{}",
+				GJ_SECRET, 0, 1,
+				rl::utils::randomInt(1, m_cNormalListMaxPage[static_cast<int>(difficulty) - 1]),
+				GJ_LEN_QUERY, getDifficultyQuery(difficulty)
+			)
+		)
+		.post(GJ_LEVELS_URL);
+
+	m_listener.setFilter(req);
 }
 
 void ListFetcher::getRandomDemonListLevel(level_pair_t& level, std::string& error)
@@ -77,11 +88,21 @@ void ListFetcher::getRandomDemonListLevel(level_pair_t& level, std::string& erro
 	is_fetching = true;
 	error = "";
 
-	web::AsyncWebRequest()
-		.get(DEMONLIST_URL)
-		.json()
-		.then([&](const auto& fjson) {
-			if (fjson.is_null())
+	m_listener.bind([&](web::WebTask::Event* e) {
+		if (web::WebResponse* res = e->getValue())
+		{
+			const auto& resp = res->json();
+
+			if (resp.isErr())
+			{
+				error = fmt::format("Pointercrate API returned an invalid response ({}). Try again later.", resp.unwrapErr());
+				is_fetching = false;
+				return;
+			}
+
+			const auto& jsonResp = resp.unwrap();
+
+			if (jsonResp.is_null())
 			{
 				error = "Pointercrate API returned null. Try again later.";
 				is_fetching = false;
@@ -90,17 +111,23 @@ void ListFetcher::getRandomDemonListLevel(level_pair_t& level, std::string& erro
 
 			int randomIndex;
 			do {
-				randomIndex = rl::utils::randomInt(0, fjson.as_array().size() - 1);
-			} while (fjson[randomIndex]["level_id"].is_null());
+				randomIndex = rl::utils::randomInt(0, jsonResp.as_array().size() - 1);
+			} while (jsonResp[randomIndex]["level_id"].is_null());
 
-			int levelId = fjson[randomIndex].template get<int>("level_id");
+			int levelId = jsonResp[randomIndex].template get<int>("level_id");
 			getLevelInfo(levelId, level, error);
-		})
-		.expect([&](const auto& err) {
-			error = err;
-
+		}
+		else if (e->isCancelled())
+		{
+			error = "Request was cancelled. (Pointercrate)";
 			is_fetching = false;
-		});
+		}
+	});
+
+	auto req = web::WebRequest()
+		.get(DEMONLIST_URL);
+
+	m_listener.setFilter(req);
 }
 
 // TODO: figure out how to get extended list & the rest of the list (current limit is 50 levels)
@@ -109,11 +136,21 @@ void ListFetcher::getRandomChallengeListLevel(level_pair_t& level, std::string& 
 	is_fetching = true;
 	error = "";
 
-	web::AsyncWebRequest()
-		.get(CHALLENGELIST_URL)
-		.json()
-		.then([&](const auto& fjson) {
-			if (fjson.is_null())
+	m_listener.bind([&](web::WebTask::Event* e) {
+		if (web::WebResponse* res = e->getValue())
+		{
+			const auto& resp = res->json();
+
+			if (resp.isErr())
+			{
+				error = fmt::format("Challenge List API returned an invalid response ({}). Try again later.", resp.unwrapErr());
+				is_fetching = false;
+				return;
+			}
+
+			const auto& jsonResp = resp.unwrap();
+
+			if (jsonResp.is_null() || !jsonResp.is_array())
 			{
 				error = "Challenge List API returned null. Try again later.";
 				is_fetching = false;
@@ -122,17 +159,23 @@ void ListFetcher::getRandomChallengeListLevel(level_pair_t& level, std::string& 
 
 			int randomIndex;
 			do {
-				randomIndex = rl::utils::randomInt(0, fjson.as_array().size() - 1);
-			} while (fjson[randomIndex]["level_id"].is_null());
+				randomIndex = rl::utils::randomInt(0, jsonResp.as_array().size() - 1);
+			} while (jsonResp[randomIndex]["level_id"].is_null());
 
-			int levelId = fjson[randomIndex].template get<int>("level_id");
+			int levelId = jsonResp[randomIndex].template get<int>("level_id");
 			getLevelInfo(levelId, level, error);
-		})
-		.expect([&](const auto& err) {
-			error = err;
-
+		}
+		else if (e->isCancelled())
+		{
+			error = "Request was cancelled. (Challenge List)";
 			is_fetching = false;
-		});
+		}
+	});
+
+	auto req = web::WebRequest()
+		.get(CHALLENGELIST_URL);
+
+	m_listener.setFilter(req);
 }
 
 void ListFetcher::getRandomGDListLevel(int listID, level_pair_t& level, std::string& error)
@@ -141,40 +184,44 @@ void ListFetcher::getRandomGDListLevel(int listID, level_pair_t& level, std::str
 	is_fetching = true;
 
 	if (m_cachedGDListID == listID && m_cachedGDListLevelIDs.size() != 0)
-	{
-		getLevelInfo(
+		return getLevelInfo(
 			std::stoi(
 				m_cachedGDListLevelIDs[rl::utils::randomInt(0, m_cachedGDListLevelIDs.size() - 1)]
 			),
 			level,
 			error
 		);
-		return;
-	}
 
-	web::AsyncWebRequest()
-		.userAgent("")
-		.bodyRaw(fmt::format("secret={}&type={}&str={}", GJ_SECRET, 0, listID))
-		.post(GJ_LISTS_URL)
-		.text()
-		.then([&, listID](const auto& resp) {
-			if (resp.length() == 0 || resp == "-1")
+	m_listener.bind([&](web::WebTask::Event* e) {
+		if (web::WebResponse* res = e->getValue())
+		{
+			const auto& resp = res->string();
+
+			if (resp.isErr())
 			{
-				error = "Invalid List ID.";
+				error = fmt::format("Servers returned an invalid response ({}). Try again later. (getGJLevelLists.php)", resp.unwrapErr());
 				is_fetching = false;
 				return;
 			}
 
-			const auto result = rtrp::RtResponseParser::parseListResponse(resp);
+			const auto& unwrappedResp = resp.unwrap();
+			if (unwrappedResp.empty() || unwrappedResp == "-1")
+			{
+				error = "Invalid List ID. (getGJLevelLists.php)";
+				is_fetching = false;
+				return;
+			}
 
-			if (result.isError())
+			const auto parsedResponse = rtrp::RtResponseParser::parseListResponse(unwrappedResp);
+
+			if (parsedResponse.isError())
 			{
 				error = "Error parsing response from servers. Try again later. (getGJLevelLists.php)";
 				is_fetching = false;
 				return;
 			}
 
-			const auto& levelIDs = result.unwrap().lists[0].levelIDs;
+			const auto& levelIDs = parsedResponse.unwrap().lists[0].levelIDs;
 
 			m_cachedGDListID = listID;
 			m_cachedGDListLevelIDs = { levelIDs };
@@ -186,46 +233,77 @@ void ListFetcher::getRandomGDListLevel(int listID, level_pair_t& level, std::str
 				level,
 				error
 			);
-		})
-		.expect([&](const auto& err) {
-			error = err;
-
+		}
+		else if (e->isCancelled())
+		{
+			error = "Request was cancelled. (getGJLevelLists.php)";
 			is_fetching = false;
-		});
+		}
+	});
+
+	auto req = web::WebRequest()
+		.userAgent("")
+		.bodyString(
+			fmt::format("secret={}&type={}&str={}", GJ_SECRET, 0, listID)
+		)
+		.post(GJ_LISTS_URL);
+
+	m_listener.setFilter(req);
 }
 
 void ListFetcher::getLevelInfo(int levelID, level_pair_t& level, std::string& error)
 {
-	web::AsyncWebRequest()
-		.userAgent("")
-		.bodyRaw(fmt::format("secret={}&type={}&str={}", GJ_SECRET, 0, levelID))
-		.post(GJ_LEVELS_URL)
-		.text()
-		.then([&](const auto& resp) {
-			if (resp == "-1")
+	m_listener2.bind([&](web::WebTask::Event* e) {
+		if (web::WebResponse* res = e->getValue())
+		{
+			const auto& resp = res->string();
+
+			if (resp.isErr())
+			{
+				error = fmt::format("Servers returned an invalid response ({}). Try again later. (getGJLevels21.php)", resp.unwrapErr());
+				is_fetching = false;
+				return;
+			}
+
+			const auto& unwrappedResp = resp.unwrap();
+
+			if (unwrappedResp.empty() || unwrappedResp == "-1")
 			{
 				error = "Invalid Level ID.";
 				is_fetching = false;
 				return;
 			}
 
-			const auto result = rtrp::RtResponseParser::parseLevelResponse(resp);
+			const auto parsedResponse = rtrp::RtResponseParser::parseLevelResponse(unwrappedResp);
 
-			if (result.isError())
+			if (parsedResponse.isError())
 			{
-				error = "Error parsing response from servers. Try again later. (getGJLevels21.php, 1)";
+				if (unwrappedResp.starts_with("error code"))
+					error = fmt::format("Server returned error code {}. Try again later. (getGJLevels21.php, 1)", unwrappedResp.substr(12));
+				else
+					error = "Error parsing response from servers. Try again later. (getGJLevels21.php, 1)";
 				is_fetching = false;
 				return;
 			}
 
-			const auto response = result.unwrap();
+			const auto response = parsedResponse.unwrap();
 
 			level = { response.levels[0], response.creators[0] };
 			is_fetching = false;
-		})
-		.expect([&](const auto& err) {
-			error = err;
-
+		}
+		else if (e->isCancelled())
+		{
+			error = "Request was cancelled. (GDList)";
 			is_fetching = false;
-		});
+		}
+	});
+
+	auto req = web::WebRequest()
+		.userAgent("")
+		.bodyString(
+			fmt::format("secret={}&type={}&str={}", GJ_SECRET, 0, levelID)
+		)
+		.post(GJ_LEVELS_URL);
+
+	m_listener2.setFilter(req);
 }
