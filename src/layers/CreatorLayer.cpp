@@ -20,7 +20,7 @@ class $modify(RouletteButton, CreatorLayer)
 
 		auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-		if(Mod::get()->getSettingValue<bool>("use-big-button")) {
+		if(Mod::get()->getSettingValue<bool>("use-big-button") && Loader::get()->isModLoaded("alphalaneous.pages_api")) {
 			if(auto menu = getChildByID("creator-buttons-menu")) {
 				auto spr = CCSprite::create("RL_btn_big.png"_spr);
 				spr->setScale(0.842);

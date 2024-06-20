@@ -58,7 +58,7 @@
 		},
 		"use-big-button": {
 			"name": "Use big button",
-			"description": "Use a big button rather than the small circle button.",
+			"description": "Use a big button rather than the small circle button. Only works with Pages API installed.",
 			"type": "bool",
 			"default": false
 		}
